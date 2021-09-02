@@ -18,6 +18,15 @@ const useStyles = makeStyles((theme) => ({
     color: "#9CADC8",
     letterSpacing: -0.17,
   },
+  unread: {
+    fontSize: 16,
+    fontWeight: "bold",
+    paddingLeft: 7,
+    paddingRight: 7,
+    borderRadius: 18,
+    color: "#FFFFFF",
+    backgroundColor: "#2222FF",
+  },
 }));
 
 const ChatContent = (props) => {
@@ -53,8 +62,12 @@ const ChatContent = (props) => {
         <Typography className={classes.previewText}>
           {latestMessageText}
         </Typography>
-        <span>{<span>{unread}</span>}</span>
       </Box>
+      {unread > 0 &&
+        <Box>
+          <span className={classes.unread}>{unread}</span>
+        </Box>
+      }
     </Box>
   );
 };
