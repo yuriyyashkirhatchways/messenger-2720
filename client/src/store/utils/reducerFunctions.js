@@ -79,3 +79,16 @@ export const addNewConvoToStore = (state, recipientId, message) => {
     }
   });
 };
+
+export const markConvoReadInStore = (state, convoId) => {
+  return state.map((convo) => {
+    if (convo.id === convoId) {
+      const convoCopy = { ...convo };
+      // TODO we should use a response from the api to set the date
+      convoCopy.userReadAt = (new Date()).toISOString();
+      return convoCopy;
+    } else {
+      return convo;
+    }
+  });
+};
