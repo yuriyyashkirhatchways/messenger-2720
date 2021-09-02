@@ -31,27 +31,9 @@ const useStyles = makeStyles((theme) => ({
 
 const ChatContent = (props) => {
   const classes = useStyles();
-  const [unread, setUnread] = useState(null);
 
-  const { conversation } = props;
+  const { conversation, unreadCount } = props;
   const { latestMessageText, otherUser } = conversation;
-
-  useEffect(() => {
-    if (!conversation.userReadAt) {
-      setUnread(conversation.messages.length);
-    } else {
-      let count = 0;
-
-      // TODO this should scan in reverse for efficiency
-      for (const message of conversation.messages) {
-        if (new Date(conversation.userReadAt) < new Date(message.createdAt)) {
-          count += 1;
-        }
-      }
-      
-      setUnread(count);
-    }
-  }, [conversation, conversation.messages, conversation.userReadAt]);
 
   return (
     <Box className={classes.root}>
@@ -63,9 +45,9 @@ const ChatContent = (props) => {
           {latestMessageText}
         </Typography>
       </Box>
-      {unread > 0 &&
+      {unreadCount > 0 &&
         <Box>
-          <span className={classes.unread}>{unread}</span>
+          <span className={classes.unread}>{unreadCount}</span>
         </Box>
       }
     </Box>

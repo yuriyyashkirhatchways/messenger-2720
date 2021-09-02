@@ -1,4 +1,4 @@
-import React from "react";
+import { useState, useEffect, React } from "react";
 import { Box } from "@material-ui/core";
 import { BadgeAvatar, ChatContent } from "../Sidebar";
 import { makeStyles } from "@material-ui/core/styles";
@@ -25,6 +25,8 @@ const Chat = (props) => {
   const { conversation } = props;
   const { otherUser } = conversation;
 
+  const [unreadCount, setUnreadCount] = useState(0);
+
   const handleClick = async (conversation) => {
     if (conversation.id) {
       props.markReadConversation(conversation.id);
@@ -32,6 +34,25 @@ const Chat = (props) => {
 
     await props.setActiveChat(conversation.otherUser.username);
   };
+
+  useEffect(() => {
+    if (!conversation.userReadAt) {
+      setUnreadCount(conversation.messages.length);
+    } else {
+      let count = 0;
+
+      // TODO this should scan in reverse for efficiency
+      for (const message of conversation.messages) {
+        if (message.senderId === conversation.otherUser.id &&
+            new Date(conversation.userReadAt) < new Date(message.createdAt))
+        {
+          count += 1;
+        }
+      }
+      
+      setUnreadCount(count);
+    }
+  }, [conversation]);
 
   return (
     <Box onClick={() => handleClick(conversation)} className={classes.root}>
@@ -41,7 +62,7 @@ const Chat = (props) => {
         online={otherUser.online}
         sidebar={true}
       />
-      <ChatContent conversation={conversation} />
+      <ChatContent conversation={conversation} unreadCount={unreadCount} />
     </Box>
   );
 };
