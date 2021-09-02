@@ -105,6 +105,9 @@ export const postMessage = (body) => async (dispatch) => {
 
     if (!body.conversationId) {
       dispatch(addConversation(body.recipientId, data.message));
+      // TODO We are refetching all conversations here to get the id
+      // for the added conversation, not very efficient.
+      dispatch(fetchConversations());
     } else {
       dispatch(setNewMessage(data.message));
     }
