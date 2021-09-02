@@ -58,6 +58,14 @@ class Conversations(APIView):
                 else:
                     convo_dict["otherUser"]["online"] = False
 
+                # set properties "userReadAt" and "otherUserReadAt"
+                if convo.user1 and convo.user1.id != user_id:
+                    convo_dict["userReadAt"] = convo.user2ReadAt
+                    convo_dict["otherUserReadAt"] = convo.user1ReadAt
+                elif convo.user2 and convo.user2.id != user_id:
+                    convo_dict["userReadAt"] = convo.user1ReadAt
+                    convo_dict["otherUserReadAt"] = convo.user2ReadAt
+
                 conversations_response.append(convo_dict)
             conversations_response.sort(
                 key=lambda convo: convo["messages"][0]["createdAt"],
