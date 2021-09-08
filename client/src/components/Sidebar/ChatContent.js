@@ -47,7 +47,7 @@ const ChatContent = (props) => {
       </Box>
       {unreadCount > 0 &&
         <Box>
-          <span className={classes.unread}>{unreadCount}</span>
+          <Box className={classes.unread}>{unreadCount}</Box>
         </Box>
       }
     </Box>
