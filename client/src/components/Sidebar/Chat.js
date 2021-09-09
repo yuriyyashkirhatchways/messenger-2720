@@ -39,16 +39,15 @@ const Chat = (props) => {
     if (!conversation.userReadAt) {
       setUnreadCount(conversation.messages.length);
     } else {
-      let count = 0;
-
-      // TODO this should scan in reverse for efficiency
-      for (const message of conversation.messages) {
+      // Scan backwards through the messages to count unread
+      const count = conversation.messages.reduceRight((count, message) => {
         if (message.senderId === conversation.otherUser.id &&
             new Date(conversation.userReadAt) < new Date(message.createdAt))
         {
           count += 1;
         }
-      }
+        return count;
+      }, 0);
       
       setUnreadCount(count);
     }
