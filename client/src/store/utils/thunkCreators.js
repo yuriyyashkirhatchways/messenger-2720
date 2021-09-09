@@ -129,7 +129,7 @@ export const searchUsers = (searchTerm) => async (dispatch) => {
 
 export const markReadConversation = (id) => async (dispatch) => {
   try {
-    await axios.get(`/api/conversations/${id}/read`);
+    await axios.post(`/api/conversations/${id}/read`);
 
     dispatch(readConversation(id));
   } catch (error) {
