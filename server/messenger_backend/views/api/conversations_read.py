@@ -25,10 +25,10 @@ class ConversationsRead(APIView):
             elif conversation.user2.id == user_id:
                 conversation.user2ReadAt = timezone.now()
             else:
-                return HttpResponse(status=403) #TODO is this correct status?
+                return HttpResponse(status=403)
 
             conversation.save()
-            return HttpResponse(status=200)
+            return HttpResponse(status=204)
 
         except Exception as e:
             return HttpResponse(status=500)
