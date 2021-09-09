@@ -22,12 +22,13 @@ class ConversationsRead(APIView):
 
             if conversation.user1.id == user_id:
                 conversation.user1ReadAt = timezone.now()
+                conversation.save(update_fields=['user1ReadAt'])
             elif conversation.user2.id == user_id:
                 conversation.user2ReadAt = timezone.now()
+                conversation.save(update_fields=['user2ReadAt'])
             else:
                 return HttpResponse(status=403)
 
-            conversation.save()
             return HttpResponse(status=204)
 
         except Exception as e:
