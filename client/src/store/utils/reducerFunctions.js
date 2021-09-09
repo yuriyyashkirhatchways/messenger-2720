@@ -1,3 +1,16 @@
+const getUnread = (conversation) => {
+  const count = conversation.messages.reduceRight((count, message) => {
+    if (message.senderId === conversation.otherUser.id &&
+        new Date(conversation.userReadAt) < new Date(message.createdAt))
+    {
+      count += 1;
+    }
+    return count;
+  }, 0);
+
+  return count;      
+};
+
 export const addMessageToStore = (state, payload) => {
   const { message, sender } = payload;
   // if sender isn't null, that means the message needs to be put in a brand new convo
@@ -16,6 +29,7 @@ export const addMessageToStore = (state, payload) => {
       const convoCopy = { ...convo };
       convoCopy.messages.push(message);
       convoCopy.latestMessageText = message.text;
+      convoCopy.unread = getUnread(convoCopy);
       return convoCopy;
     } else {
       return convo;
@@ -73,6 +87,7 @@ export const addNewConvoToStore = (state, recipientId, message) => {
       const convoCopy = { ...convo };
       convoCopy.messages.push(message);
       convoCopy.latestMessageText = message.text;
+      convoCopy.unread = getUnread(convoCopy);
       return convoCopy;
     } else {
       return convo;
@@ -86,9 +101,18 @@ export const markConvoReadInStore = (state, convoId) => {
       const convoCopy = { ...convo };
       // TODO we should use a response from the api to set the date
       convoCopy.userReadAt = (new Date()).toISOString();
+      convoCopy.unread = getUnread(convoCopy);
       return convoCopy;
     } else {
       return convo;
     }
+  });
+};
+
+export const initializeStore = (conversations) => {
+  return conversations.map((convo) => {
+    const convoCopy = { ...convo };
+    convoCopy.unread = getUnread(convoCopy);
+    return convoCopy;
   });
 };

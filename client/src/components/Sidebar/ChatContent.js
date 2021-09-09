@@ -32,7 +32,7 @@ const useStyles = makeStyles((theme) => ({
 const ChatContent = (props) => {
   const classes = useStyles();
 
-  const { conversation, unreadCount } = props;
+  const { conversation } = props;
   const { latestMessageText, otherUser } = conversation;
 
   return (
@@ -45,9 +45,9 @@ const ChatContent = (props) => {
           {latestMessageText}
         </Typography>
       </Box>
-      {unreadCount > 0 &&
+      {conversation.unread > 0 &&
         <Box>
-          <Box className={classes.unread}>{unreadCount}</Box>
+          <Box className={classes.unread}>{conversation.unread}</Box>
         </Box>
       }
     </Box>

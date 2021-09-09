@@ -25,8 +25,6 @@ const Chat = (props) => {
   const { conversation } = props;
   const { otherUser } = conversation;
 
-  const [unreadCount, setUnreadCount] = useState(0);
-
   const handleClick = async (conversation) => {
     if (conversation.id) {
       props.markReadConversation(conversation.id);
@@ -34,24 +32,6 @@ const Chat = (props) => {
 
     await props.setActiveChat(conversation.otherUser.username);
   };
-
-  useEffect(() => {
-    if (!conversation.userReadAt) {
-      setUnreadCount(conversation.messages.length);
-    } else {
-      // Scan backwards through the messages to count unread
-      const count = conversation.messages.reduceRight((count, message) => {
-        if (message.senderId === conversation.otherUser.id &&
-            new Date(conversation.userReadAt) < new Date(message.createdAt))
-        {
-          count += 1;
-        }
-        return count;
-      }, 0);
-      
-      setUnreadCount(count);
-    }
-  }, [conversation]);
 
   return (
     <Box onClick={() => handleClick(conversation)} className={classes.root}>
@@ -61,7 +41,7 @@ const Chat = (props) => {
         online={otherUser.online}
         sidebar={true}
       />
-      <ChatContent conversation={conversation} unreadCount={unreadCount} />
+      <ChatContent conversation={conversation} />
     </Box>
   );
 };
