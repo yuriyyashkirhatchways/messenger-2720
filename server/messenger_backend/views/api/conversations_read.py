@@ -1,5 +1,5 @@
 from django.contrib.auth.middleware import get_user
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from messenger_backend.models import Conversation
 from rest_framework.views import APIView
 from rest_framework.request import Request
@@ -23,13 +23,21 @@ class ConversationsRead(APIView):
             if conversation.user1.id == user_id:
                 conversation.user1ReadAt = timezone.now()
                 conversation.save(update_fields=['user1ReadAt'])
+                return JsonResponse({
+                    "userId": user_id,
+                    "convoId": conversation.id,
+                    "readAt": conversation.user1ReadAt,
+                })
             elif conversation.user2.id == user_id:
                 conversation.user2ReadAt = timezone.now()
                 conversation.save(update_fields=['user2ReadAt'])
+                return JsonResponse({
+                    "userId": user_id,
+                    "convoId": conversation.id,
+                    "readAt": conversation.user2ReadAt,
+                })
             else:
                 return HttpResponse(status=403)
-
-            return HttpResponse(status=204)
 
         except Exception as e:
             return HttpResponse(status=500)

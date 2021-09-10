@@ -70,10 +70,10 @@ export const addConversation = (recipientId, newMessage) => {
   };
 };
 
-export const readConversation = (id) => {
+export const readConversation = (data) => {
   return {
     type: READ_CONVERSATION,
-    id
+    data
   };
 };
 
@@ -102,7 +102,7 @@ const reducer = (state = [], action) => {
         action.payload.newMessage
       );
     case READ_CONVERSATION:
-      return markConvoReadInStore(state, action.id);
+      return markConvoReadInStore(state, action.data);
     default:
       return state;
   }

@@ -95,12 +95,15 @@ export const addNewConvoToStore = (state, recipientId, message) => {
   });
 };
 
-export const markConvoReadInStore = (state, convoId) => {
+export const markConvoReadInStore = (state, data) => {
   return state.map((convo) => {
-    if (convo.id === convoId) {
+    if (convo.id === data.convoId) {
       const convoCopy = { ...convo };
-      // TODO we should use a response from the api to set the date
-      convoCopy.userReadAt = (new Date()).toISOString();
+      if (data.userId === convo.otherUser.id) {
+        convoCopy.otherUserReadAt = data.readAt;
+      } else {
+        convoCopy.userReadAt = data.readAt;
+      }
       convoCopy.unread = getUnread(convoCopy);
       return convoCopy;
     } else {

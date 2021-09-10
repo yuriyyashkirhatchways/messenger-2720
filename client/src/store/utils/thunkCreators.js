@@ -130,9 +130,10 @@ export const searchUsers = (searchTerm) => async (dispatch) => {
 
 export const markReadConversation = (id) => async (dispatch) => {
   try {
-    await axios.post(`/api/conversations/${id}/read`);
+    const { data } = await axios.post(`/api/conversations/${id}/read`);
 
-    dispatch(readConversation(id));
+    dispatch(readConversation(data));
+    socket.emit("read-conversation", data);
   } catch (error) {
     console.error(error);
   }
