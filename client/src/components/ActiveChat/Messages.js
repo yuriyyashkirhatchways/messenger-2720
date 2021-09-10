@@ -13,6 +13,7 @@ const Messages = (props) => {
         new Date(otherUserReadAt) >= new Date(messages[i].createdAt)) 
     {
       idOfLastRead = messages[i].id;
+      break;
     }
   }
 
