@@ -128,9 +128,11 @@ export const searchUsers = (searchTerm) => async (dispatch) => {
   }
 };
 
-export const markReadConversation = (id) => async (dispatch) => {
+export const markReadConversation = (id, lastReadMessageId) => async (dispatch) => {
   try {
-    const { data } = await axios.post(`/api/conversations/${id}/read`);
+    const { data } = await axios.post(`/api/conversations/${id}/read`, {
+      lastReadMessageId
+    });
 
     dispatch(readConversation(data));
     socket.emit("read-conversation", data);

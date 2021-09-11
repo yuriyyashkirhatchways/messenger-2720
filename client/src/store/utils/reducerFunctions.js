@@ -1,16 +1,3 @@
-const getUnread = (conversation) => {
-  const count = conversation.messages.reduceRight((count, message) => {
-    if (message.senderId === conversation.otherUser.id &&
-        new Date(conversation.userReadAt) < new Date(message.createdAt))
-    {
-      count += 1;
-    }
-    return count;
-  }, 0);
-
-  return count;      
-};
-
 export const addMessageToStore = (state, payload) => {
   const { message, sender } = payload;
   // if sender isn't null, that means the message needs to be put in a brand new convo
@@ -21,6 +8,8 @@ export const addMessageToStore = (state, payload) => {
       messages: [message],
     };
     newConvo.latestMessageText = message.text;
+    newConvo.unread = 1;
+
     return [newConvo, ...state];
   }
 
@@ -29,7 +18,9 @@ export const addMessageToStore = (state, payload) => {
       const convoCopy = { ...convo };
       convoCopy.messages.push(message);
       convoCopy.latestMessageText = message.text;
-      convoCopy.unread = getUnread(convoCopy);
+      if (convoCopy.otherUser.id === message.senderId) {
+        convoCopy.unread += 1;
+      }
       return convoCopy;
     } else {
       return convo;
@@ -87,7 +78,6 @@ export const addNewConvoToStore = (state, recipientId, message) => {
       const convoCopy = { ...convo };
       convoCopy.messages.push(message);
       convoCopy.latestMessageText = message.text;
-      convoCopy.unread = getUnread(convoCopy);
       return convoCopy;
     } else {
       return convo;
@@ -101,21 +91,14 @@ export const markConvoReadInStore = (state, data) => {
       const convoCopy = { ...convo };
       if (data.userId === convo.otherUser.id) {
         convoCopy.otherUserReadAt = data.readAt;
+        convoCopy.otherUserLastReadMessageId = data.lastReadMessageId;
       } else {
         convoCopy.userReadAt = data.readAt;
       }
-      convoCopy.unread = getUnread(convoCopy);
+      convoCopy.unread = 0;
       return convoCopy;
     } else {
       return convo;
     }
-  });
-};
-
-export const initializeStore = (conversations) => {
-  return conversations.map((convo) => {
-    const convoCopy = { ...convo };
-    convoCopy.unread = getUnread(convoCopy);
-    return convoCopy;
   });
 };

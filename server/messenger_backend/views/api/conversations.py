@@ -34,6 +34,27 @@ class Conversations(APIView):
             conversations_response = []
 
             for convo in conversations:
+                # calculate unread for each user:w
+                user1ReadStatus = {"unread": 0, "lastReadMessageId": None}
+                user2ReadStatus = {"unread": 0, "lastReadMessageId": None}
+
+                # we check each message to see if it is unread and count it.
+                # If no unread messages remain set lastReadMessageId; we are done.
+                for message in convo.messages.all():
+                    if convo.user1ReadAt and message.senderId != convo.user1.id and not user1ReadStatus["lastReadMessageId"]:
+                        if message.createdAt > convo.user1ReadAt:
+                            user1ReadStatus["unread"] += 1
+                        else:
+                            user1ReadStatus["lastReadMessageId"] = message.id
+                    elif convo.user2ReadAt and message.senderId != convo.user2.id and not user2ReadStatus["lastReadMessageId"]:
+                        if message.createdAt > convo.user2ReadAt:
+                            user2ReadStatus["unread"] += 1
+                        else:
+                            user2ReadStatus["lastReadMessageId"] = message.id
+                    else:
+                        break
+                print(user1ReadStatus, user1ReadStatus)
+
                 convo_dict = {
                     "id": convo.id,
                     "messages": [
@@ -58,13 +79,17 @@ class Conversations(APIView):
                 else:
                     convo_dict["otherUser"]["online"] = False
 
-                # set properties "userReadAt" and "otherUserReadAt"
+                # set properties "userReadAt", "otherUserReadAt", "unread", and "otherUserLastReadMessageId"
                 if convo.user1 and convo.user1.id != user_id:
                     convo_dict["userReadAt"] = convo.user2ReadAt
                     convo_dict["otherUserReadAt"] = convo.user1ReadAt
+                    convo_dict["unread"] = user2ReadStatus["unread"]
+                    convo_dict["otherUserLastReadMessageId"] = user1ReadStatus["lastReadMessageId"]
                 elif convo.user2 and convo.user2.id != user_id:
                     convo_dict["userReadAt"] = convo.user1ReadAt
                     convo_dict["otherUserReadAt"] = convo.user2ReadAt
+                    convo_dict["unread"] = user1ReadStatus["unread"]
+                    convo_dict["otherUserLastReadMessageId"] = user2ReadStatus["lastReadMessageId"]
 
                 conversations_response.append(convo_dict)
             conversations_response.sort(

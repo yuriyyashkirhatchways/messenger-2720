@@ -13,6 +13,7 @@ class ConversationsRead(APIView):
     def post(self, request: Request, pk: int):
         try:
             user = get_user(request)
+            body = request.data
 
             if user.is_anonymous:
                 return HttpResponse(status=401)
@@ -27,6 +28,7 @@ class ConversationsRead(APIView):
                     "userId": user_id,
                     "convoId": conversation.id,
                     "readAt": conversation.user1ReadAt,
+                    "lastReadMessageId": body["lastReadMessageId"],
                 })
             elif conversation.user2.id == user_id:
                 conversation.user2ReadAt = timezone.now()
@@ -35,9 +37,11 @@ class ConversationsRead(APIView):
                     "userId": user_id,
                     "convoId": conversation.id,
                     "readAt": conversation.user2ReadAt,
+                    "lastReadMessageId": body["lastReadMessageId"],
                 })
             else:
                 return HttpResponse(status=403)
 
         except Exception as e:
+            print(e)
             return HttpResponse(status=500)

@@ -38,6 +38,7 @@ def conversation_read(sid, data):
             "userId": data["userId"],
             "convoId": data["convoId"],
             "readAt": data["readAt"],
+            "lastReadMessageId": data["lastReadMessageId"],
         },
         skip_sid=sid,
     )

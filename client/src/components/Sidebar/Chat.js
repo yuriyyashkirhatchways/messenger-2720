@@ -27,7 +27,17 @@ const Chat = (props) => {
 
   const handleClick = async (conversation) => {
     if (conversation.id) {
-      props.markReadConversation(conversation.id);
+      let lastReadMessageId = null;
+
+      for (let i = conversation.messages.length - 1; i >= 0; i--) {
+        const message = conversation.messages[i];
+
+        if (message.senderId === conversation.otherUser.id) {
+          lastReadMessageId = message.id;
+          break;
+        }
+      }
+      props.markReadConversation(conversation.id, lastReadMessageId);
     }
 
     await props.setActiveChat(conversation.otherUser.username);
@@ -51,8 +61,8 @@ const mapDispatchToProps = (dispatch) => {
     setActiveChat: (id) => {
       dispatch(setActiveChat(id));
     },
-    markReadConversation: (id) => {
-      dispatch(markReadConversation(id));
+    markReadConversation: (id, lastReadMessageId) => {
+      dispatch(markReadConversation(id, lastReadMessageId));
     },
   };
 };

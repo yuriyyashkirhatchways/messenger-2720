@@ -39,7 +39,7 @@ const ActiveChat = (props) => {
               otherUser={conversation.otherUser}
               userId={user.id}
               userReadAt={conversation.userReadAt}
-              otherUserReadAt={conversation.otherUserReadAt}
+              otherUserLastReadMessageId={conversation.otherUserLastReadMessageId}
             />
             <Input
               otherUser={conversation.otherUser}
