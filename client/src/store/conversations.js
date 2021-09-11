@@ -62,10 +62,10 @@ export const clearSearchedUsers = () => {
 };
 
 // add new conversation when sending a new message
-export const addConversation = (recipientId, newMessage) => {
+export const addConversation = (recipientId, newMessage, conversationId) => {
   return {
     type: ADD_CONVERSATION,
-    payload: { recipientId, newMessage },
+    payload: { recipientId, newMessage, conversationId },
   };
 };
 
@@ -98,7 +98,8 @@ const reducer = (state = [], action) => {
       return addNewConvoToStore(
         state,
         action.payload.recipientId,
-        action.payload.newMessage
+        action.payload.newMessage,
+        action.payload.conversationId,
       );
     case READ_CONVERSATION:
       return markConvoReadInStore(state, action.data);
