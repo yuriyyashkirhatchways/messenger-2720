@@ -10,7 +10,7 @@ class ConversationsRead(APIView):
     """Mark the conversation as read from the current user. Stores the last
     read time."""
 
-    def post(self, request: Request, pk: int):
+    def patch(self, request: Request, pk: int):
         try:
             user = get_user(request)
             body = request.data

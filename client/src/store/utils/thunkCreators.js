@@ -130,7 +130,7 @@ export const searchUsers = (searchTerm) => async (dispatch) => {
 
 export const markReadConversation = (id, lastReadMessageId) => async (dispatch) => {
   try {
-    const { data } = await axios.post(`/api/conversations/${id}/read`, {
+    const { data } = await axios.patch(`/api/conversations/${id}/read`, {
       lastReadMessageId
     });
 
